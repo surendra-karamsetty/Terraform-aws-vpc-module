@@ -32,9 +32,9 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count = length(var.public_subnet_ciders)
+  count = length(var.private_subnet_ciders)
   vpc_id     = aws_vpc.main.id
-  cidr_block = var.public_subnet_ciders[count.index]
+  cidr_block = var.private_subnet_ciders[count.index]
   availability_zone = local.az_zone[count.index]
 
   tags = merge (
@@ -47,7 +47,7 @@ resource "aws_subnet" "private" {
   )
 }
 
-resource "aws_subnet" "main" {
+resource "aws_subnet" "database" {
   count = length (var.database_subnet_ciders)
   vpc_id     = aws_vpc.main.id
   cidr_block = var.database_subnet_ciders[count.index]
