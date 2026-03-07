@@ -76,3 +76,13 @@ variable "nat_tags" {
     type = map 
     default = {}
 }
+
+variable "VPC_peering_is_required" {
+    type = bool
+    default = false
+}
+
+variable "peering_tags" {
+    type = map 
+    default = {}
+}
