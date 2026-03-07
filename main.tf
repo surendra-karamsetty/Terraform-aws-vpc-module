@@ -30,3 +30,33 @@ resource "aws_subnet" "public" {
   )
   
 }
+
+resource "aws_subnet" "private" {
+  count = length(var.public_subnet_ciders)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.public_subnet_ciders[count.index]
+  availability_zone = local.az_zone[count.index]
+
+  tags = merge (
+    local.common_tags,
+    {
+        #roboshop-dev-private-us-east-1a
+        Name = "${var.project}-${var.environment}-private-${local.az_zone[count.index]}"
+    },
+    var.private_subnet_tags
+  )
+}
+
+resource "aws_subnet" "main" {
+  count = length (var.database_subnet_ciders)
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.database_subnet_ciders[count.index]
+  availability_zone = local.az_zone[count.index]
+
+  tags = merge (
+     local.common_tags,
+     {
+        Name = "${var.project}-${var.environment}-database-${local.az_zone[count.index]}"
+     }
+  )
+}
