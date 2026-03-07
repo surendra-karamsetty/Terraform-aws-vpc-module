@@ -77,7 +77,7 @@ variable "nat_tags" {
     default = {}
 }
 
-variable "VPC_peering_is_required" {
+variable "is_peering_required" {
     type = bool
     default = false
 }

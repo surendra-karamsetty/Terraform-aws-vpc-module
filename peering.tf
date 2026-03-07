@@ -1,9 +1,9 @@
 resource "aws_vpc_peering_connection" "default" {
-  count = var.VPC_peering_is_required ? 1 : 0
+  count = var.is_peering_required ? 1 : 0
   #peer_owner_id = var.peer_owner_id --if your are creating the peering request for anoter user you need to user this.
   
   #requester
-  peer_vpc_id   = data.aws_vpc_default.id
+  peer_vpc_id   = data.aws_vpc.default.id
 
   #accepter
   vpc_id        = aws_vpc.main.id
@@ -25,4 +25,26 @@ resource "aws_vpc_peering_connection" "default" {
     },
     var.peering_tags
   )
+}
+
+resource "aws_route" "public" {
+  count = var.is_peering_required ? 1 : 0
+  route_table_id            = aws_route_table.public.id
+  destination_cidr_block    = data.aws_vpc.default.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
+}
+
+resource "aws_route" "private" {
+  count = var.is_peering_required ? 1 : 0
+  route_table_id            = aws_route_table.private.id
+  destination_cidr_block    = data.aws_vpc.default.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
+}
+
+
+resource "aws_route" "database" {
+  count = var.is_peering_required ? 1 : 0
+  route_table_id            = aws_route_table.database.id
+  destination_cidr_block    = data.aws_vpc.default.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.default.id
 }
